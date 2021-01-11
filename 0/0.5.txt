@@ -1,0 +1,21 @@
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+server-->browser: spa.js
+
+note over browser:
+browser executes spa.js, which
+listens for readyState attribute changes
+and fetches data.json
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: [{ content: "SPA is modern", date: "2021-01-11" }, ...]
+
+note over browser:
+readyState has changed, so browser
+executes part of spa.js to render notes
+to display
+end note

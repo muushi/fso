@@ -1,0 +1,22 @@
+note over browser:
+user writes something in text field
+user presses "Save" and submits form
+end note
+
+note over browser:
+event listener in spa.js triggers on
+form submission:
+- creates JSON message
+- appends the JSON message to list of notes
+- POSTs the JSON message to
+/exampleapp/new_note_spa
+end note
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: 201 Created: {"message":"note created"}
+
+note over browser:
+readyState has changed, so browser
+executes part of spa.js to re-render
+notes to display
+end note
