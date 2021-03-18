@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import contactService from './services/contact'
@@ -10,6 +11,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ query, setQuery ] = useState('')
+  const [ errorMsg, setErrorMsg ] = useState(null)
+  const [ errorClass, setErrorClass ] = useState('error')
 
   const setPerson = (event) => {
     event.preventDefault()
@@ -20,12 +23,34 @@ const App = () => {
         contactService.update(duplicate.id, newPerson).then(res => {
         console.log(res)
         contactService.getAll().then(res => updatePersons(res))
+        setErrorMsg(
+          `Updated ${newPerson.name}`
+        )
+        setErrorClass('info')
+        setTimeout(() => {
+          setErrorMsg(null)
+        }, 3000)
         }
-      )
+      ).catch(err => {
+        setErrorMsg(
+          `Information of ${newPerson.name} has already been removed from server`
+        )
+        setErrorClass('error')
+        setTimeout(() => {
+          setErrorMsg(null)
+        }, 3000)
+      })
     } else {
       contactService.create(newPerson).then(res => console.log(res))
       const newPersons = [...persons, newPerson]
       updatePersons(newPersons)
+      setErrorMsg(
+        `Added ${newPerson.name}`
+      )
+      setErrorClass('info')
+      setTimeout(() => {
+        setErrorMsg(null)
+      }, 3000)
     }
   }
   const updatePersons = (newPersons) => {
@@ -64,6 +89,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMsg} errClass={errorClass} />
       <Filter value={query} onChange={handleQuery} />
       <h2>add a new</h2>
       <PersonForm onSubmit={setPerson} name={newName} nameOnChange={handleNameChange} number={newNumber} numberOnChange={handleNumberChange} />
