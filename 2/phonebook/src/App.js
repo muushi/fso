@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import contactService from './services/contact'
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
@@ -13,16 +13,26 @@ const App = () => {
 
   const setPerson = (event) => {
     event.preventDefault()
+    const newPerson = {name: newName, number: newNumber}
     const duplicate = persons.find(person => person.name === newName)
     if (duplicate) {
-      alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`))
+        contactService.update(duplicate.id, newPerson).then(res => {
+        console.log(res)
+        contactService.getAll().then(res => updatePersons(res))
+        }
+      )
     } else {
-      const newPersons = [...persons, {name: newName, number: newNumber}]
-      setPersons(newPersons)
-      setFilteredPersons(newPersons.filter(
-        person => person.name.toLowerCase().includes(query.toLowerCase())
-      ))
+      contactService.create(newPerson).then(res => console.log(res))
+      const newPersons = [...persons, newPerson]
+      updatePersons(newPersons)
     }
+  }
+  const updatePersons = (newPersons) => {
+    setPersons(newPersons)
+    setFilteredPersons(newPersons.filter(
+      person => person.name.toLowerCase().includes(query.toLowerCase())
+    ))
   }
 
   const handleNameChange = (event) => {
@@ -37,11 +47,16 @@ const App = () => {
       person => person.name.toLowerCase().includes(event.target.value.toLowerCase())
     ))
   }
-
+  const handleClick = (person) => {
+    if (window.confirm(`Delete ${person.name} ?`))
+    contactService.remove(person.id).then(res =>
+      console.log(res)
+    )
+    const newPersons = persons.filter(p => p.id !== person.id)
+    updatePersons(newPersons)
+  }
   const hook = () => {
-    axios.get('http://localhost:3001/persons').then(resp => {
-      setPersons(resp.data)
-      setFilteredPersons(resp.data)})
+    contactService.getAll().then(res => updatePersons(res))
   }
 
   useEffect(hook, [])
@@ -53,7 +68,7 @@ const App = () => {
       <h2>add a new</h2>
       <PersonForm onSubmit={setPerson} name={newName} nameOnChange={handleNameChange} number={newNumber} numberOnChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons}/>
+      <Persons persons={filteredPersons} handleClick={handleClick} />
     </div>
   )
 }
