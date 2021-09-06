@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "build:heroku": "rm -rf build && cd ../../2/phonebook && npm run build --prod && cp -r build ../../3/phonebook-backend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Niklas Sivaro",
