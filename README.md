@@ -1,1 +1,1 @@
-Exercise 3.10 Heroku url: https://fso-310.herokuapp.com/
+Exercise 3.10 Heroku url: https://fso-310.herokuapp.com/ (updated for 3.21)
