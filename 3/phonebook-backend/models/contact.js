@@ -11,8 +11,8 @@ mongoose.connect(url).then(res => {
 })
 
 const contactSchema = new mongoose.Schema({
-  name: {type: String, unique: true},
-  number: String
+  name: {type: String, minlength: 3, unique: true},
+  number: {type: String, minlength: 8}
 })
 contactSchema.plugin(uniqValidator)
 

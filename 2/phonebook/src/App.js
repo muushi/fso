@@ -41,16 +41,26 @@ const App = () => {
         }, 3000)
       })
     } else {
-      contactService.create(newPerson).then(res => console.log(res))
-      const newPersons = [...persons, newPerson]
-      updatePersons(newPersons)
-      setErrorMsg(
-        `Added ${newPerson.name}`
-      )
-      setErrorClass('info')
-      setTimeout(() => {
-        setErrorMsg(null)
-      }, 3000)
+      contactService.create(newPerson).then(res => {
+        console.log(res)
+        const newPersons = [...persons, newPerson]
+        updatePersons(newPersons)
+        setErrorMsg(
+          `Added ${newPerson.name}`
+        )
+        setErrorClass('info')
+        setTimeout(() => {
+          setErrorMsg(null)
+        }, 3000)
+      })
+      .catch(err => {
+          setErrorMsg(err.response.data.error)
+          setErrorClass('error')
+          setTimeout(() => {
+            setErrorMsg(null)
+          }, 3000)
+        })
+
     }
   }
   const updatePersons = (newPersons) => {
