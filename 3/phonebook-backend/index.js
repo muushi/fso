@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Contact = require('./models/contact')
 const app = express()
 
 morgan.token('payload', function getPayload(req) {
@@ -27,30 +29,31 @@ let persons = [
     id: 3,
     name: "Dan Abramov",
     number: "12-43-234345"
-  },
-  {
-    id: 4,
-    name: "Mary Poppendick",
-    number: "39-23-6423122"
   }
 ]
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Contact.find({}).then(contacts => {
+    response.json(contacts)
+  })
 })
 
 app.get('/info', (request, response) => {
-  response.send(`Phonebook has info for ${persons.length} people<br><br>${new Date()}`)
+  Contact.find({}).then(contacts => {
+    response.send(`Phonebook has info for ${contacts.length} people<br><br>${new Date()}`)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
+  Contact.findById(request.params.id).then(note => {
+    response.json(note)
+  })
+  /* const person = persons.find(person => person.id === id)
   if (person) {
     response.json(person)
   } else {
     response.status(404).end()
-  }
+  } */
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -73,6 +76,14 @@ app.post('/api/persons', (request, response) => {
       error: 'no number' 
     })
   }
+  const contact = new Contact({
+    name: body.name,
+    number: body.number
+  })
+  contact.save().then(savedContact => {
+    response.json(savedContact)
+  })
+  /*
   // check if name exists
   if (persons.find(person => person.name === body.name)) {
     return response.status(400).json({ 
@@ -87,9 +98,10 @@ app.post('/api/persons', (request, response) => {
   persons = persons.concat(person)
 
   response.json(person)
+  */
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
