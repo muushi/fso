@@ -38,7 +38,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
   }).catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
   // check for name
   if (!body.name) {
@@ -58,7 +58,7 @@ app.post('/api/persons', (request, response) => {
   })
   contact.save().then(savedContact => {
     response.json(savedContact)
-  })
+  }).catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -95,6 +95,9 @@ const errorHandler = (err, req, res, next) => {
   console.error(err.message)
   if (err.name === 'CastError') {
     return res.status(400).send({error: 'malformatted id'})
+  }
+  if (err.name ==='ValidationError') {
+    return res.status(400).send({error: 'duplicate names are not allowed'})
   }
 
   next(err)
