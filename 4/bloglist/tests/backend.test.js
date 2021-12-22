@@ -43,7 +43,22 @@ test('blog addition works correctly', async () => {
   const contents = blogs.map(b => b.title)
   expect(contents).toContain('Test Blog')
 })
+test('blog addition without likes forces likes to 0', async () => {
+  const newBlog = {
+    title: 'Test Blog',
+    author: 'Test McTestFace',
+    url: 'localhost',
+  }
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
 
+  const blogs = await helper.blogsInDb()
+  expect(blogs[blogs.length-1].likes).toBe(0)
+
+})
 
 afterAll(() => {
   mongoose.connection.close()
