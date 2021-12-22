@@ -89,11 +89,22 @@ describe('favoriteBlog', () => {
 })
 
 describe('mostBlogs', () => {
-  test('correctly identifies favorite blog', () => {
+  test('correctly identifies with most blogs', () => {
     const result = listHelper.mostBlogs(blogList)
     const resObj = {
       author: 'Robert C. Martin',
       blogs: 3
+    }
+    expect(result).toEqual(resObj)
+  })
+})
+
+describe('mostLikes', () => {
+  test('correctly identifies most author with most likes', () => {
+    const result = listHelper.mostLikes(blogList)
+    const resObj = {
+      author: 'Edsger W. Dijkstra',
+      likes: 17
     }
     expect(result).toEqual(resObj)
   })
