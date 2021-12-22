@@ -5,5 +5,6 @@ content-type: application/json
     "title": "Blog McBlogFace",
     "author": "Test McTestFace",
     "url": "localhost",
-    "likes": 134
+    "likes": 134,
+    "userId": "id"
 }
