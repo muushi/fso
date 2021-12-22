@@ -1,10 +1,10 @@
 POST http://localhost:3003/api/blogs
 content-type: application/json
+Authorization: bearer token
 
 {
     "title": "Blog McBlogFace",
     "author": "Test McTestFace",
     "url": "localhost",
-    "likes": 134,
-    "userId": "id"
+    "likes": 134
 }
