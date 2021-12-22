@@ -96,6 +96,22 @@ describe('blog DELETE operation', () => {
   })
 })
 
+describe('blog PUT operation', () => {
+  test('blog updating works correctly', async () => {
+    const blogs = await api.get('/api/blogs')
+    const blogIdToUpdate = blogs.body[0].id
+    const updatedBlog = {...blogs.body[0], likes: 20}
+    await api
+      .put(`/api/blogs/${blogIdToUpdate}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const updBlogs = await api.get('/api/blogs')
+    expect(updBlogs.body[0].likes).toBe(20)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
