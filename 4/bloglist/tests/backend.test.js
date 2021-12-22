@@ -84,6 +84,18 @@ describe('blog POST operations', () => {
   })
 })
 
+describe('blog DELETE operation', () => {
+  test('blog deletion works correctly', async () => {
+    const blogs = await api.get('/api/blogs')
+    const blogIdToDel = blogs.body[0].id
+    await api
+      .delete(`/api/blogs/${blogIdToDel}`)
+      .expect(204)
+    const blogsAfterDeletion = await api.get('/api/blogs')
+    expect(blogsAfterDeletion.body).toHaveLength(5)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
