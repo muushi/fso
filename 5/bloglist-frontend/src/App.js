@@ -17,7 +17,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const App = () => {
       }, 3000)
     } catch (ex) {
       setErrorMsg(
-        `wrong username or password`
+        'wrong username or password'
       )
       setErrorClass('error')
       setTimeout(() => {
@@ -63,7 +63,7 @@ const App = () => {
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
     setErrorMsg(
-      `Logged out.`
+      'Logged out.'
     )
     setErrorClass('info')
     setTimeout(() => {
@@ -73,9 +73,9 @@ const App = () => {
 
   const addBlog = (blogObject) => {
     blogService.createBlog(blogObject, user)
-    .then(resp => {
-      setBlogs(blogs.concat(resp))
-    })
+      .then(resp => {
+        setBlogs(blogs.concat(resp))
+      })
     setErrorMsg(
       `a new blog ${blogObject.title} by ${blogObject.author} added`
     )
@@ -87,15 +87,15 @@ const App = () => {
 
   const modifyBlog = (blogObject) => {
     blogService.updateBlog(blogObject, user)
-    .then(resp => console.log(JSON.stringify(resp)))
+      .then(resp => console.log(JSON.stringify(resp)))
   }
 
   const removeBlog = (id) => {
     blogService.deleteBlog(id, user)
-    .then(resp => console.log(resp))
+      .then(resp => console.log(resp))
     setBlogs(blogs.filter(blog => blog.id !== id))
     setErrorMsg(
-      `Blog deleted.`
+      'Blog deleted.'
     )
     setErrorClass('info')
     setTimeout(() => {
@@ -116,19 +116,19 @@ const App = () => {
           <div>
             username
             <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
+              type="text"
+              value={username}
+              name="Username"
+              onChange={({ target }) => setUsername(target.value)}
             />
           </div>
           <div>
             password
             <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
+              type="password"
+              value={password}
+              name="Password"
+              onChange={({ target }) => setPassword(target.value)}
             />
           </div>
           <button type="submit">login</button>
