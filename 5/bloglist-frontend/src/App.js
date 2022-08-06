@@ -80,6 +80,11 @@ const App = () => {
     }, 3000)
   }
 
+  const modifyBlog = (blogObject) => {
+    blogService.updateBlog(blogObject, user)
+    .then(resp => console.log(JSON.stringify(resp)))
+  }
+
   if (user === null) {
     return (
       <div>
@@ -122,7 +127,7 @@ const App = () => {
         <BlogForm createBlog={addBlog} />
       </Togglable>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={modifyBlog} />
       )}
     </div>
   )
