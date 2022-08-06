@@ -36,7 +36,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
       </div>
       <div style={hideWhenCollapsed}>
         {blog.url} <br />
-    likes {likes} <button onClick={addLike}>like</button> <br />
+    likes {likes} <button className="likebtn" onClick={addLike}>like</button> <br />
         {blog.user.name} <br />
         {user && user.username === blog.user.username ? (<button onClick={deleteBlog}>remove</button>) : ''}
       </div>
