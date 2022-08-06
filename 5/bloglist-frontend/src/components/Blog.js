@@ -32,12 +32,12 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   return (
     <div style={blogStyle}>
       <div onClick={() => setCollapse(!collapse)}>
-        {blog.title} <button>{collapse ? 'view' : 'hide'}</button>
+        {blog.title} {blog.author} <button>{collapse ? 'view' : 'hide'}</button>
       </div>
       <div style={hideWhenCollapsed}>
         {blog.url} <br />
     likes {likes} <button onClick={addLike}>like</button> <br />
-        {blog.author} <br />
+        {blog.user.name} <br />
         {user && user.username === blog.user.username ? (<button onClick={deleteBlog}>remove</button>) : ''}
       </div>
     </div>
