@@ -115,7 +115,7 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={errorMsg} errClass={errorClass} />
       <div>
-        {user.name} logged in
+        {user.name} logged in&nbsp;
         <button onClick={handleLogout}>logout</button>
       </div>
       <Togglable buttonLabel="new blog">
