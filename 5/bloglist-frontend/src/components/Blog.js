@@ -11,7 +11,7 @@ const Blog = ({blog, updateBlog}) => {
   }
   const addLike = (event) => {
     event.preventDefault()
-    const newLikes = parseInt(blog.likes) + 1
+    const newLikes = parseInt(likes) + 1
     const requestBody = {
       id: blog.id,
       user: blog.user.id,

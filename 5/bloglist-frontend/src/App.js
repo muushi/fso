@@ -85,6 +85,11 @@ const App = () => {
     .then(resp => console.log(JSON.stringify(resp)))
   }
 
+  const sortBlogs = (a,b) => {
+    return b.likes - a.likes
+  }
+
+  console.log(JSON.stringify(blogs))
   if (user === null) {
     return (
       <div>
@@ -126,7 +131,7 @@ const App = () => {
       <Togglable buttonLabel="new blog">
         <BlogForm createBlog={addBlog} />
       </Togglable>
-      {blogs.map(blog =>
+      {blogs.sort(sortBlogs).map(blog =>
         <Blog key={blog.id} blog={blog} updateBlog={modifyBlog} />
       )}
     </div>
