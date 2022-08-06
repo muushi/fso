@@ -74,7 +74,7 @@ const App = () => {
   const addBlog = (blogObject) => {
     blogService.createBlog(blogObject, user)
       .then(resp => {
-        setBlogs(blogs.concat(resp))
+        setBlogs(blogs.concat({ ...resp, user: { username: user.username } }))
       })
     setErrorMsg(
       `a new blog ${blogObject.title} by ${blogObject.author} added`

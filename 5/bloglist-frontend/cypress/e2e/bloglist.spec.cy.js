@@ -74,5 +74,10 @@ describe('Blog app', function() {
       cy.contains('like').click()
       cy.get('div.blogcontainer').should('contain', 'likes 1')
     })
+    it('A blog can be deleted', function() {
+      cy.contains('Testing is easy: 10 quick tips Cypress').click()
+      cy.contains('remove').click()
+      cy.get('div.info').should('contain', 'Blog deleted.')
+    })
   })
 })
