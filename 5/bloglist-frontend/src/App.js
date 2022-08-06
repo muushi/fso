@@ -150,9 +150,11 @@ const App = () => {
       <Togglable buttonLabel="new blog">
         <BlogForm createBlog={addBlog} />
       </Togglable>
-      {blogs.sort(sortBlogs).map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={modifyBlog} removeBlog={removeBlog} user={user} />
-      )}
+      <div className='blogcontainer'>
+        {blogs.sort(sortBlogs).map(blog =>
+          <Blog key={blog.id} blog={blog} updateBlog={modifyBlog} removeBlog={removeBlog} user={user} />
+        )}
+      </div>
     </div>
   )
 }

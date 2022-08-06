@@ -43,6 +43,7 @@ const BlogForm = ({
             type="text"
             value={blogTitle}
             name="Title"
+            className="blogform-title"
             onChange={handleTitleChange}
           />
         </div>
@@ -52,6 +53,7 @@ const BlogForm = ({
             type="text"
             value={blogAuthor}
             name="Author"
+            className="blogform-author"
             onChange={handleAuthorChange}
           />
         </div>
@@ -61,6 +63,7 @@ const BlogForm = ({
             type="text"
             value={blogUrl}
             name="Url"
+            className="blogform-url"
             onChange={handleUrlChange}
           />
         </div>
