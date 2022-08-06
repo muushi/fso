@@ -30,7 +30,6 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log('login credentials:', username, password)
     try {
       const user = await loginService.login({
         username, password
@@ -63,7 +62,13 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
-    console.log('Logged out.')
+    setErrorMsg(
+      `Logged out.`
+    )
+    setErrorClass('info')
+    setTimeout(() => {
+      setErrorMsg(null)
+    }, 3000)
   }
 
   const addBlog = (blogObject) => {
@@ -85,11 +90,23 @@ const App = () => {
     .then(resp => console.log(JSON.stringify(resp)))
   }
 
+  const removeBlog = (id) => {
+    blogService.deleteBlog(id, user)
+    .then(resp => console.log(resp))
+    setBlogs(blogs.filter(blog => blog.id !== id))
+    setErrorMsg(
+      `Blog deleted.`
+    )
+    setErrorClass('info')
+    setTimeout(() => {
+      setErrorMsg(null)
+    }, 3000)
+  }
+
   const sortBlogs = (a,b) => {
     return b.likes - a.likes
   }
 
-  console.log(JSON.stringify(blogs))
   if (user === null) {
     return (
       <div>
@@ -132,7 +149,7 @@ const App = () => {
         <BlogForm createBlog={addBlog} />
       </Togglable>
       {blogs.sort(sortBlogs).map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={modifyBlog} />
+        <Blog key={blog.id} blog={blog} updateBlog={modifyBlog} removeBlog={removeBlog} user={user} />
       )}
     </div>
   )

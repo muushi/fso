@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({blog, updateBlog}) => {
+const Blog = ({blog, updateBlog, removeBlog, user}) => {
   const [collapse, setCollapse] = useState(true)
   const [likes, setLikes] = useState(blog.likes)
   const hideWhenCollapsed = { display: collapse ? 'none' : '' }
@@ -23,7 +23,12 @@ const Blog = ({blog, updateBlog}) => {
     updateBlog(requestBody)
     setLikes(newLikes)
   }
-
+  const deleteBlog = (event) => {
+    event.preventDefault()
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      removeBlog(blog.id)
+    }
+  }
   return (
   <div style={blogStyle}>
   <div onClick={() => setCollapse(!collapse)}>
@@ -33,6 +38,7 @@ const Blog = ({blog, updateBlog}) => {
     {blog.url} <br />
     likes {likes} <button onClick={addLike}>like</button> <br />
     {blog.author} <br />
+    {user && user.username === blog.user.username ? (<button onClick={deleteBlog}>remove</button>) : ''}
   </div>
   </div>  
 )}
