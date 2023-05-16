@@ -7,6 +7,8 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     dispatch({ type: 'anecdotes/newAnecdote', payload: content})
+    dispatch({ type: 'notification/addNotificationNew', payload: content })
+    setTimeout(() =>  {dispatch({ type: 'notification/removeNotification'})}, 5000)
   }
 
   return(

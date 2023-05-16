@@ -17,13 +17,20 @@ const AnecdoteList = () => {
     return state.anecdotes.filter(anecdote => anecdote.content.includes(state.filter))
   })
 
+  const vote = (anecdote) => {
+    dispatch({ type: 'anecdotes/voteAnecdote', payload: anecdote.id})
+    dispatch({ type: 'notification/addNotificationVote', payload: anecdote.content })
+    setTimeout(() =>  {dispatch({ type: 'notification/removeNotification'})}, 5000)
+
+  }
+
   return(
     <div>
       {anecdotes.sort((a,b) => b.votes - a.votes).map(anecdote => 
         <Anecdote
           key={anecdote.id}
           anecdote={anecdote}
-          handleClick={() => dispatch({ type: 'anecdotes/voteAnecdote', payload: anecdote.id})}
+          handleClick={() => vote(anecdote)}
         />
       )}
     </div>
