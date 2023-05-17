@@ -1,4 +1,5 @@
 import { useState, useEffect, useContext } from 'react'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -8,22 +9,28 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const queryClient = useQueryClient()
+  const blogUpdateMutation = useMutation(blogService.updateBlog, {
+    onSuccess: () => {queryClient.invalidateQueries('blogs')}
+  })
+  const blogAddMutation = useMutation(blogService.createBlog, {
+    onSuccess: () => {queryClient.invalidateQueries('blogs')}
+  })
+  const blogDeleteMutation = useMutation(blogService.deleteBlog, {
+    onSuccess: () => {queryClient.invalidateQueries('blogs')}
+  })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, notificationDispatch] = useContext(NotificationContext)
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])
+  const query = useQuery('blogs', blogService.getAll)
 
   useEffect(() => {
     const authenticatedUserJSON = window.localStorage.getItem('authenticatedUser')
     if (authenticatedUserJSON) {
       const user = JSON.parse(authenticatedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -37,6 +44,7 @@ const App = () => {
         'authenticatedUser', JSON.stringify(user)
       )
       setUser(user)
+      blogService.setToken(user.token)
       setUsername('')
       setPassword('')
       notificationDispatch({ type: 'INFO', payload: `Welcome, ${user.name}` })
@@ -55,6 +63,7 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
+    blogService.setToken(null)
     notificationDispatch({ type: 'INFO', payload: 'Logged out.' })
     setTimeout(() => {
       notificationDispatch({ type: 'CLEAR' })
@@ -62,10 +71,7 @@ const App = () => {
   }
 
   const addBlog = (blogObject) => {
-    blogService.createBlog(blogObject, user)
-      .then(resp => {
-        setBlogs(blogs.concat({ ...resp, user: { username: user.username } }))
-      })
+    blogAddMutation.mutate(blogObject)
     notificationDispatch({ type: 'INFO', payload: `a new blog ${blogObject.title} by ${blogObject.author} added` })
     setTimeout(() => {
       notificationDispatch({ type: 'CLEAR' })
@@ -73,14 +79,11 @@ const App = () => {
   }
 
   const modifyBlog = (blogObject) => {
-    blogService.updateBlog(blogObject, user)
-      .then(resp => console.log(JSON.stringify(resp)))
+    blogUpdateMutation.mutate(blogObject)
   }
 
   const removeBlog = (id) => {
-    blogService.deleteBlog(id, user)
-      .then(resp => console.log(resp))
-    setBlogs(blogs.filter(blog => blog.id !== id))
+    blogDeleteMutation.mutate(id)
     notificationDispatch({ type: 'INFO', payload: 'Blog deleted.' })
     setTimeout(() => {
       notificationDispatch({ type: 'CLEAR' })
@@ -122,7 +125,22 @@ const App = () => {
       </div>
     )
   }
-
+  if (query.isLoading) return (
+    <div>
+      <h2>blogs</h2>
+      <Notification />
+      <div>
+        {user.name} logged in&nbsp;
+        <button onClick={handleLogout}>logout</button>
+      </div>
+      <Togglable buttonLabel="new blog">
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+      <div className='blogcontainer'>
+        Loading data
+      </div>
+    </div>
+  )
   return (
     <div>
       <h2>blogs</h2>
@@ -135,7 +153,7 @@ const App = () => {
         <BlogForm createBlog={addBlog} />
       </Togglable>
       <div className='blogcontainer'>
-        {blogs.sort(sortBlogs).map(blog =>
+        {query.data.sort(sortBlogs).map(blog =>
           <Blog key={blog.id} blog={blog} updateBlog={modifyBlog} removeBlog={removeBlog} user={user} />
         )}
       </div>

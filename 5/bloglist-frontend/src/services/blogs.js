@@ -6,23 +6,31 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-const createBlog = (body, user) => {
+let token = null
+
+const setToken = (updatedToken) => {
+  token = updatedToken
+}
+
+const getToken = () => token
+
+const createBlog = async (body) => {
   // error handling?
-  const request = axios.post(baseUrl, {
+  const request = await axios.post(baseUrl, {
     title: body.title,
     author: body.author,
     url: body.url,
     likes: 0
   }, {
     headers: {
-      'Authorization': `bearer ${user.token}`
+      'Authorization': `bearer ${token}`
     }
   })
-  return request.then(response => response.data)
+  return request.data
 }
 
-const updateBlog = (body, user) => {
-  const request = axios.put(`${baseUrl}/${body.id}`, {
+const updateBlog = async (body) => {
+  const request = await axios.put(`${baseUrl}/${body.id}`, {
     user: body.user,
     likes: body.likes,
     author: body.author,
@@ -30,19 +38,19 @@ const updateBlog = (body, user) => {
     url: body.url
   }, {
     headers: {
-      'Authorization': `bearer ${user.token}`
+      'Authorization': `bearer ${token}`
     }
   })
-  return request.then(response => response.data)
+  return request.data
 }
 
-const deleteBlog = (id, user) => {
-  const request = axios.delete(`${baseUrl}/${id}`, {
+const deleteBlog = async (id) => {
+  const request = await axios.delete(`${baseUrl}/${id}`, {
     headers: {
-      'Authorization': `bearer ${user.token}`
+      'Authorization': `bearer ${token}`
     }
   })
-  return request.then(response => response.data)
+  return request.data
 }
 
-export default { getAll, createBlog, updateBlog, deleteBlog }
+export default { setToken, getToken, getAll, createBlog, updateBlog, deleteBlog }
