@@ -24,6 +24,11 @@ const AnecdoteForm = () => {
     setTimeout(() =>  {notificationDispatch({type: 'CLEAR'})}, 5000)
 }
 
+  if (newAnecdoteMutation.isError) {
+    notificationDispatch({type: 'ERROR', payload: newAnecdoteMutation.error.response.data.error})
+    setTimeout(() =>  {notificationDispatch({type: 'CLEAR'})}, 5000)
+  }
+
   return (
     <div>
       <h3>create new</h3>
