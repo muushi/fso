@@ -1,21 +1,16 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { useContext } from 'react'
+import NotificationContext from './NotificationContext'
 
-const Notification = ({ message, errClass }) => {
-  if (message === null) {
-    return null
-  }
+const Notification = () => {
+  const [notification] = useContext(NotificationContext)
+  if (notification.message === '') return null
 
   return (
-    <div className={errClass}>
-      {message}
+    <div className={notification.class}>
+      {notification.message}
     </div>
   )
-}
-
-Notification.propTypes = {
-  message: PropTypes.string.isRequired,
-  errClass: PropTypes.string.isRequired
 }
 
 export default Notification

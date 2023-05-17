@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import NotificationContext from './components/NotificationContext'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,9 +12,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMsg, setErrorMsg] = useState(null)
-  const [errorClass, setErrorClass] = useState('error')
-
+  const [notification, notificationDispatch] = useContext(NotificationContext)
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
@@ -40,20 +39,14 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-      setErrorMsg(
-        `Welcome, ${user.name}`
-      )
-      setErrorClass('info')
+      notificationDispatch({ type: 'INFO', payload: `Welcome, ${user.name}` })
       setTimeout(() => {
-        setErrorMsg(null)
+        notificationDispatch({ type: 'CLEAR' })
       }, 3000)
     } catch (ex) {
-      setErrorMsg(
-        'wrong username or password'
-      )
-      setErrorClass('error')
+      notificationDispatch({ type: 'ERROR', payload: 'wrong username or password' })
       setTimeout(() => {
-        setErrorMsg(null)
+        notificationDispatch({ type: 'CLEAR' })
       }, 3000)
     }
   }
@@ -62,12 +55,9 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('authenticatedUser')
     setUser(null)
-    setErrorMsg(
-      'Logged out.'
-    )
-    setErrorClass('info')
+    notificationDispatch({ type: 'INFO', payload: 'Logged out.' })
     setTimeout(() => {
-      setErrorMsg(null)
+      notificationDispatch({ type: 'CLEAR' })
     }, 3000)
   }
 
@@ -76,12 +66,9 @@ const App = () => {
       .then(resp => {
         setBlogs(blogs.concat({ ...resp, user: { username: user.username } }))
       })
-    setErrorMsg(
-      `a new blog ${blogObject.title} by ${blogObject.author} added`
-    )
-    setErrorClass('info')
+    notificationDispatch({ type: 'INFO', payload: `a new blog ${blogObject.title} by ${blogObject.author} added` })
     setTimeout(() => {
-      setErrorMsg(null)
+      notificationDispatch({ type: 'CLEAR' })
     }, 3000)
   }
 
@@ -94,12 +81,9 @@ const App = () => {
     blogService.deleteBlog(id, user)
       .then(resp => console.log(resp))
     setBlogs(blogs.filter(blog => blog.id !== id))
-    setErrorMsg(
-      'Blog deleted.'
-    )
-    setErrorClass('info')
+    notificationDispatch({ type: 'INFO', payload: 'Blog deleted.' })
     setTimeout(() => {
-      setErrorMsg(null)
+      notificationDispatch({ type: 'CLEAR' })
     }, 3000)
   }
 
@@ -111,7 +95,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <Notification message={errorMsg} errClass={errorClass} />
+        <Notification notification={notification} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -142,7 +126,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={errorMsg} errClass={errorClass} />
+      <Notification />
       <div>
         {user.name} logged in&nbsp;
         <button onClick={handleLogout}>logout</button>
